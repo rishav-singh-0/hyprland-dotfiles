@@ -1,0 +1,28 @@
+#!/bin/bash
+
+
+# A dmenu wrapper script for system functions.
+case "$(readlink -f /sbin/init)" in
+	*systemd*) ctl='systemctl' ;;
+	*) ctl='loginctl' ;;
+esac
+
+# wayland and xorg
+if [ $XDG_SESSION_TYPE = "wayland" ]; then
+  menu=("wofi --dmenu --lines 8 --width 300 --xoffset 1618 --yoffset 3 -p Action: ")
+  lock=(swaylock)
+else
+  menu=("dmenu -i -p 'Action: '")
+  lock=(slock)
+fi
+
+
+case "$(printf "🔒 lock\n🚪 leave Hyprland\n🐻 hibernate\n🔃 reboot\n🖥️shutdown\n💤 sleep" | $menu)" in
+	'🔒 lock') $lock ;;
+	"🚪 leave Hyprland") kill -TERM $(pgrep -u $USER "\bHyprland") ;;
+	'💤 sleep') $ctl suspend -i ;;
+	'🐻 hibernate') $ctl hibernate -i ;;
+	'🔃 reboot') $ctl reboot -i ;;
+	'🖥️shutdown') $ctl poweroff -i ;;
+	*) exit 1 ;;
+esac
