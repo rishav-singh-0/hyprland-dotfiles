@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# OCR of selected area and copy it to clipboard
+if [ $XDG_SESSION_TYPE = "wayland" ]; then
+  screenshot=("grim -g '$(slurp)' -");
+  clipboard=("wl-copy -p")
+else
+  screenshot=("maim -s")
+  clipboard=("xclip -selection clipboard")
+fi
+
+$screenshot | tesseract stdin stdout --dpi 150 | $clipboard
+
