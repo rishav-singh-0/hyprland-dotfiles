@@ -1,0 +1,13 @@
+#!/bin/sh
+
+screenshot_path=$HOME/Pictures/Screenshots
+
+case "$(echo "a selected area\nfull screen\na selected area (copy)\nfull screen (copy)" | wofi -S dmenu -L 7 -W 400 -p 'Screenshot which area?')" in
+  "a selected area") grim -g "$(slurp)" $screenshot_path/pic-selected-"$(date '+%y%m%d-%H%M-%S').png" ;;
+	"current window") maim -i "$(xdotool getactivewindow)" $screenshot_path/pic-window-"$(date '+%y%m%d-%H%M-%S').png" ;;
+	"full screen") grim $screenshot_path/pic-full-"$(date '+%y%m%d-%H%M-%S').png" ;;
+  "a selected area (copy)") grim -g "$(slurp)" - | wl-copy -t image/png ;;
+	"current window (copy)") maim -i "$(xdotool getactivewindow)" | xclip -selection clipboard -t image/png ;;
+	"full screen (copy)") grim - | wl-copy -t image/png ;;
+esac
+
