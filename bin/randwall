@@ -1,0 +1,11 @@
+#/bin/bash
+
+img_path=$(find $HOME/Pictures/wallpapers -type f | shuf -n 1)
+wall_path=$HOME/.config/background
+
+rm -f $wall_path
+ln -s $img_path $wall_path
+
+killall swaybg
+
+swaybg -i $wall_path &
